@@ -26,15 +26,17 @@ package
 		public function Map(x:Number=0, y:Number=0, graphic:Graphic=null, mask:Mask=null) 
 		{
 			super(x, y, graphic, mask);
-			mapgen= new MapGen(TILE_LENGTH, TILE_LENGTH, (int)(FP.scale(Math.random(), 0, 1, int.MIN_VALUE, int.MAX_VALUE)));
+			mapgen = new MapGen(TILE_LENGTH, TILE_LENGTH, (int)(FP.scale(Math.random(), 0, 1, int.MIN_VALUE, int.MAX_VALUE)));
+			this.x = -(BLOCK_LENGTH * TILE_LENGTH);
+			this.y = -(BLOCK_LENGTH * TILE_LENGTH);
 			
 			initRegions();
 		}
 		
 		public function updateCenter(xPos:Number, yPos:Number):void 
 		{
-			var xTile:int = xPos / BLOCK_LENGTH;
-			var yTile:int = yPos / BLOCK_LENGTH;
+			var xTile:int = (xPos-this.x) / BLOCK_LENGTH;
+			var yTile:int = (yPos-this.y) / BLOCK_LENGTH;
 			var xRegion:int = xTile / TILE_LENGTH;
 			var yRegion:int = yTile / TILE_LENGTH;
 			if (xRegion != xCenterRegion || yRegion != yCenterRegion) {
@@ -43,6 +45,7 @@ package
 					xCenterRegion = xRegion;
 					yCenterRegion = yRegion;
 					regenerate();
+					trace("Regenerated!");
 				}
 				var i:int;
 				var j:int;
@@ -52,10 +55,11 @@ package
 					for (j = 0; j < 5; j++) 
 					{
 						rightRegions[j].x = (xCenterRegion + 3) * rightRegions[j].width;
-						mapgen.generate(rightRegions[j], xCenterRegion + 3, yCenterRegion - 2 + j);
+						mapgen.generate(rightRegions[j], xCenterRegion + 3, yRegion - 2 + j);
 						regions.splice(20 + j, 0, rightRegions[j]);
 					}
 					xCenterRegion++;
+					trace("shifted right!: x:" + xCenterRegion + " y:" + yRegion);
 				}
 				//if center has moved left, move rightmost regions to left most edge and regenerate
 				while (xCenterRegion > xRegion) {
@@ -63,10 +67,11 @@ package
 					for (j = 0; j < 5; j++) 
 					{
 						leftRegions[j].x = (xCenterRegion - 3) * leftRegions[j].width;
-						mapgen.generate(leftRegions[j], xCenterRegion - 3, yCenterRegion - 2 + j);
+						mapgen.generate(leftRegions[j], xCenterRegion - 3, yRegion - 2 + j);
 						regions.splice(j, 0, leftRegions[j]);
 					}
 					xCenterRegion--;
+					trace("shifted left!: x:" + xCenterRegion + " y:" + yRegion);
 				}
 				//if center has moved down, move top regions to bottom edge and regenerate
 				while (yCenterRegion < yRegion) {
@@ -74,10 +79,11 @@ package
 					{
 						var top:Vector.<Tilemap> = regions.splice(i*5, 1);
 						top[0].y = (yCenterRegion + 3) * top[0].height;
-						mapgen.generate(top[0], xCenterRegion - 2 + i, yCenterRegion + 3);
+						mapgen.generate(top[0], xRegion - 2 + i, yCenterRegion + 3);
 						regions.splice((i+1)*5 - 1, 0, top[0]);
 					}
 					yCenterRegion++;
+					trace("shifted down!: x:" + xRegion + " y:" + yCenterRegion);
 				}
 				//if center has moved up, move bottom regions to top edge and regenerate
 				while (yCenterRegion > yRegion) {
@@ -85,10 +91,11 @@ package
 					{
 						var bottom:Vector.<Tilemap> = regions.splice((i + 1) * 5 - 1, 1);
 						bottom[0].y = (yCenterRegion - 3) * bottom[0].height;
-						mapgen.generate(bottom[0], xCenterRegion - 2 + i, yCenterRegion - 3);
+						mapgen.generate(bottom[0], xRegion - 2 + i, yCenterRegion - 3);
 						regions.splice(i*5, 0, bottom[0]);
 					}
 					yCenterRegion--;
+					trace("shifted up!: x:" + xRegion + " y:" + yCenterRegion);
 				}
 			}
 		}
