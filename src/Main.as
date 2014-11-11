@@ -12,10 +12,11 @@ package
 	public class Main extends Engine 
 	{
 		
-		
+		public static const WIDTH:int = 600;
+		public static const HEIGHT:int = 600;
 		public function Main():void
 		{
-			super(600, 600);
+			super(WIDTH, HEIGHT);
 		}
 		
 		override public function init():void

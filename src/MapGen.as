@@ -12,7 +12,7 @@ package
 		private var width:int;
 		private var height:int;
 		private var seed:int;
-		private var numOctaves:int = 3;
+		private var numOctaves:int = 2;
 		private var timeOffsets:Array = new Array();
 		public function MapGen(width:int, height:int, seed:int) 
 		{
@@ -43,7 +43,7 @@ package
 				point.y += (Point)(timeOffsets[count]).y;
 				offsets.push(point);
 			}
-			noise = NoiseVector.createNoiseVector(width, height, width * 0.5, height * 0.5, numOctaves, 100, seed, 0, offsets);
+			noise = NoiseVector.createNoiseVector(width, height, width * 1, height * 1, numOctaves, 100, seed, 0, offsets);
 			//generate procedural terrain as such
 			for (var j:int = 0; j < height; j++) {
 				for (var i:int = 0; i < width; i++) {
@@ -58,10 +58,10 @@ package
 		//number is between 0 and 255
 		private function getTile(noiseValue:uint):int
 		{
-			if (noiseValue < 92) return 0; //ocean
-			else if (noiseValue < 102) return 1; //dirt
-			else if (noiseValue < 153) return 2; //grass
-			else if (noiseValue < 163) return 3; //stone
+			if (noiseValue < 55) return 0; //ocean
+			else if (noiseValue < 75) return 1; //dirt
+			else if (noiseValue < 150) return 2; //grass
+			else if (noiseValue < 225) return 3; //stone
 			else return 4; //mountain
 		}
 	}
