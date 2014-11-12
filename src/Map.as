@@ -14,7 +14,7 @@ package
 	 */
 	public class Map extends Entity 
 	{
-		private static const BLOCK_LENGTH:int = 16;
+		private static const BLOCK_LENGTH:int = 4;
 		public static const TILE_LENGTH:int = 16;
 		private static const OFFSET_SPEED:Number = 10;
 		
@@ -27,16 +27,14 @@ package
 		{
 			super(x, y, graphic, mask);
 			mapgen = new MapGen(TILE_LENGTH, TILE_LENGTH, (int)(FP.scale(Math.random(), 0, 1, int.MIN_VALUE, int.MAX_VALUE)));
-			this.x = -(BLOCK_LENGTH * TILE_LENGTH);
-			this.y = -(BLOCK_LENGTH * TILE_LENGTH);
 			
 			initRegions();
 		}
 		
 		public function updateCenter(xPos:Number, yPos:Number):void 
 		{
-			var xTile:int = (xPos-this.x) / BLOCK_LENGTH;
-			var yTile:int = (yPos-this.y) / BLOCK_LENGTH;
+			var xTile:int = xPos / BLOCK_LENGTH;
+			var yTile:int = yPos / BLOCK_LENGTH;
 			var xRegion:int = xTile / TILE_LENGTH;
 			var yRegion:int = yTile / TILE_LENGTH;
 			if (xRegion != xCenterRegion || yRegion != yCenterRegion) {
@@ -45,7 +43,7 @@ package
 					xCenterRegion = xRegion;
 					yCenterRegion = yRegion;
 					regenerate();
-					trace("Regenerated!");
+					trace("Regenerated!: x:" + xCenterRegion + " y:" + yCenterRegion);
 				}
 				var i:int;
 				var j:int;
@@ -63,7 +61,7 @@ package
 				}
 				//if center has moved left, move rightmost regions to left most edge and regenerate
 				while (xCenterRegion > xRegion) {
-					var leftRegions:Vector.<Tilemap> = regions.splice(19, 5);
+					var leftRegions:Vector.<Tilemap> = regions.splice(20, 5);
 					for (j = 0; j < 5; j++) 
 					{
 						leftRegions[j].x = (xCenterRegion - 3) * leftRegions[j].width;
@@ -109,11 +107,12 @@ package
 					//036
 					//147
 					//258
+					//if center is (0,0)
 					var region:Tilemap = regions[j + i * 5];
-					var xReg:int = i + xCenterRegion - 2;
-					var yReg:int = j + yCenterRegion - 2;
+					var xReg:int = i + xCenterRegion - 2; //(-2, -1, 0, 1 , 2)
+					var yReg:int = j + yCenterRegion - 2; //(-2, -1, 0, 1 , 2)
 					mapgen.generate(region, xReg, yReg);
-					region.x = xReg * region.width;
+					region.x = xReg * region.width; //(-512, -256, 0, 256, 512)
 					region.y = yReg * region.height;
 				}
 			}

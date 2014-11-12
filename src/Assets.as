@@ -7,7 +7,7 @@ package
 	 */
 	public class Assets 
 	{
-		[Embed(source = "../res/blocks2.png")]
+		[Embed(source = "../res/blocks.png")]
 		public static const BLOCKS:Class;
 	}
 

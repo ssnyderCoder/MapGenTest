@@ -34,6 +34,9 @@ package
 		}
 		
 		public function generate(tiles:Tilemap, xReg:int, yReg:int):void {
+			testGenerate(tiles);
+			return;
+			
 			var noise:Vector.<uint>;
 			var offsets:Array = new Array();
 			for (var count:int = 0; count < numOctaves; count++) 
@@ -51,6 +54,16 @@ package
 					var noiseValue:uint = noise[i + j * width];
 					id = getTile(noiseValue);
 					tiles.setTile(i, j, id);
+				}
+			}
+		}
+		
+		private function testGenerate(tiles:Tilemap):void 
+		{
+			for (var j:int = 0; j < height; j++) {
+				for (var i:int = 0; i < width; i++) {
+					if(i == 0 || i == width-1 || j == 0 || j == height-1)
+						tiles.setTile(i, j, 2);
 				}
 			}
 		}
