@@ -14,7 +14,7 @@ package
 	 */
 	public class Map extends Entity 
 	{
-		private static const BLOCK_LENGTH:int = 4;
+		private static const BLOCK_LENGTH:int = 16;
 		public static const TILE_LENGTH:int = 16;
 		private static const OFFSET_SPEED:Number = 10;
 		

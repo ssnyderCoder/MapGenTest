@@ -34,8 +34,6 @@ package
 		}
 		
 		public function generate(tiles:Tilemap, xReg:int, yReg:int):void {
-			testGenerate(tiles);
-			return;
 			
 			var noise:Vector.<uint>;
 			var offsets:Array = new Array();
@@ -74,7 +72,7 @@ package
 			if (noiseValue < 55) return 0; //ocean
 			else if (noiseValue < 75) return 1; //dirt
 			else if (noiseValue < 150) return 2; //grass
-			else if (noiseValue < 225) return 3; //stone
+			else if (noiseValue < 185) return 3; //stone
 			else return 4; //mountain
 		}
 	}
