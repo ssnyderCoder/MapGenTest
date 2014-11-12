@@ -33,10 +33,11 @@ package
 		
 		public function updateCenter(xPos:Number, yPos:Number):void 
 		{
-			var xTile:int = xPos / BLOCK_LENGTH;
-			var yTile:int = yPos / BLOCK_LENGTH;
-			var xRegion:int = xTile / TILE_LENGTH;
-			var yRegion:int = yTile / TILE_LENGTH;
+			//problem: need to round down rather than use int division for negative numbers to work properly
+			var xTile:int = Math.floor(xPos / BLOCK_LENGTH);
+			var yTile:int = Math.floor(yPos / BLOCK_LENGTH);
+			var xRegion:int = Math.floor(xTile / TILE_LENGTH);
+			var yRegion:int = Math.floor( yTile / TILE_LENGTH);
 			if (xRegion != xCenterRegion || yRegion != yCenterRegion) {
 				//if center vastly different, then just regenerate everything
 				if(Math.abs(xRegion - xCenterRegion) > 3 || Math.abs(yRegion - yCenterRegion) > 3){
