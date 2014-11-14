@@ -8,29 +8,15 @@ package
 	 */
 	public class MapGen 
 	{
-		
 		private var width:int;
 		private var height:int;
 		private var seed:int;
 		private var numOctaves:int = 2;
-		private var timeOffsets:Array = new Array();
 		public function MapGen(width:int, height:int, seed:int) 
 		{
 			this.width = width;
 			this.height = height;
 			this.seed = seed;
-			for (var i:int = 0; i < numOctaves; i++) 
-			{
-				timeOffsets.push(new Point(0, 0));
-			}
-		}
-		
-		public function addOffset(x:Number, y:Number):void {
-			for each (var item:Point in timeOffsets) 
-			{
-				item.x += x;
-				item.y += y;
-			}
 		}
 		
 		public function generate(tiles:Tilemap, xReg:int, yReg:int):void {
@@ -40,8 +26,6 @@ package
 			for (var count:int = 0; count < numOctaves; count++) 
 			{
 				var point:Point = new Point(width * xReg, height * yReg);
-				point.x += (Point)(timeOffsets[count]).x;
-				point.y += (Point)(timeOffsets[count]).y;
 				offsets.push(point);
 			}
 			noise = NoiseVector.createNoiseVector(width, height, width * 1, height * 1, numOctaves, 100, seed, 0, offsets);
@@ -52,16 +36,6 @@ package
 					var noiseValue:uint = noise[i + j * width];
 					id = getTile(noiseValue);
 					tiles.setTile(i, j, id);
-				}
-			}
-		}
-		
-		private function testGenerate(tiles:Tilemap):void 
-		{
-			for (var j:int = 0; j < height; j++) {
-				for (var i:int = 0; i < width; i++) {
-					if(i == 0 || i == width-1 || j == 0 || j == height-1)
-						tiles.setTile(i, j, 2);
 				}
 			}
 		}
