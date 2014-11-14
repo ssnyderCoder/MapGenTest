@@ -52,20 +52,21 @@
 		
 		/**
 		 * Sets the index of every tile in the tilemap
-		 * @param	tiles vector that contains each tile id, where each index can be checked with (jRow + iCol*rows)
+		 * @param	tiles vector that contains each tile id, where each index can be checked with (iCol + jRow*columns)
 		 * @return true if all tiles set, but false if something invalid about the vector
 		 */
 		public function setAllTiles(tiles:Vector.<uint>):Boolean {
 			if (tiles.length != _rows * _columns) {
 				return false;
 			}
-			for (var i:int = 0; i < _columns; i++) 
+			for (var j:int = 0; j < _rows; j++) 
 			{
-				for (var j:int = 0; j < _rows; j++) 
+				for (var i:int = 0; i < _columns; i++) 
 				{
-					setTile(i, j, tiles[j + i * _rows]);
+					setTile(i, j, tiles[i + j * _columns]);
 				}
 			}
+			return true;
 		}
 		
 		/**

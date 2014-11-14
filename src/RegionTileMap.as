@@ -7,7 +7,7 @@ package
 	 */
 	internal final class RegionTileMap 
 	{
-		private var _tilemap:Tilemap = new Tilemap(Assets.BLOCKS, Map.TILE_LENGTH * Map.BLOCK_LENGTH, Map.TILE_LENGTH * Map.BLOCK_LENGTH, Map.BLOCK_LENGTH, Map.BLOCK_LENGTH);
+		private var _tilemap:Tilemap = new Tilemap(Assets.BLOCKS, Constants.REGION_LENGTH * Constants.BLOCK_LENGTH, Constants.REGION_LENGTH * Constants.BLOCK_LENGTH, Constants.BLOCK_LENGTH, Constants.BLOCK_LENGTH);
 		private var _xRegion:int = int.MIN_VALUE;
 		private var _yRegion:int = int.MIN_VALUE;
 		

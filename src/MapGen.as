@@ -40,6 +40,28 @@ package
 			}
 		}
 		
+		public function generateTerrain(xReg:int, yReg:int):Vector.<uint> {
+			
+			var noise:Vector.<uint>;
+			var offsets:Array = new Array();
+			for (var count:int = 0; count < numOctaves; count++) 
+			{
+				var point:Point = new Point(width * xReg, height * yReg);
+				offsets.push(point);
+			}
+			noise = NoiseVector.createNoiseVector(width, height, width * 1, height * 1, numOctaves, 100, seed, 0, offsets);
+			//generate procedural terrain as such
+			for (var j:int = 0; j < height; j++) {
+				for (var i:int = 0; i < width; i++) {
+					var id:int;
+					var noiseValue:uint = noise[i + j * width];
+					id = getTile(noiseValue);
+					noise[i + j * width] = id;
+				}
+			}
+			return noise;
+		}
+		
 		//number is between 0 and 255
 		private function getTile(noiseValue:uint):int
 		{
