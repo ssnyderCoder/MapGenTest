@@ -93,6 +93,13 @@ package
 			const yIndex:int = yRegion - (yPop * 16);
 			return popNoise[xIndex + yIndex * 16];
 		}
+		
+		public function addStructure(xRegion:int, yRegion:int, struct:StructureData):void {
+			const xQuadReg:int = Math.floor(xRegion / 4.0);
+			const yQuadReg:int = Math.floor(yRegion / 4.0);
+			var quad:QuadRegionData = getQuad(xRegion, yRegion);
+			return quad.addStructure(xRegion - (xQuadReg * 4), yRegion - (yQuadReg * 4), struct);
+		}
 	}
 
 }

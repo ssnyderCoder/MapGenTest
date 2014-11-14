@@ -31,7 +31,7 @@ package
 		{
 			//gen a camp in places with fairly low population
 			const popValue:int = mapdata.getPopulation(xReg, yReg);
-			const maxChance:int = 25 - Math.abs(popValue - 50);
+			const maxChance:int = 35 - Math.abs(popValue - 70);
 			//const maxChance:int = 25;
 			const roll:int = FP.rand(100);
 			//const roll:int = 0;
@@ -39,6 +39,14 @@ package
 				//do block checking to make sure it spawns on land only
 				var xTile:int = FP.rand(14);
 				var yTile:int = FP.rand(14);
+				var localXReg:int = xReg - (quad.xQuad * 4);
+				var localYReg:int = yReg - (quad.yQuad * 4);
+				if (quad.getBlock(xTile, yTile, localXReg, localYReg).getTerrainType() != Block.TERRAIN_LAND ||
+				    quad.getBlock(xTile + 1, yTile, localXReg, localYReg).getTerrainType() != Block.TERRAIN_LAND ||
+					quad.getBlock(xTile, yTile + 1, localXReg, localYReg).getTerrainType() != Block.TERRAIN_LAND ||
+					quad.getBlock(xTile + 1, yTile + 1, localXReg, localYReg).getTerrainType() != Block.TERRAIN_LAND) {
+					return;
+				}
 				var struct:StructureData = new StructureData(xTile, yTile, StructureData.TYPE_CAMP);
 				quad.addStructure(xReg - (quad.xQuad * 4), yReg - (quad.yQuad * 4), struct);
 			}
@@ -48,7 +56,7 @@ package
 		{
 			//gen a town in places with high population
 			const popValue:int = mapdata.getPopulation(xReg, yReg);
-			const maxChance:int = (popValue - 75) / 2;
+			const maxChance:int = (popValue - 105) / 2;
 			//const maxChance:int = 25;
 			const roll:int = FP.rand(100);
 			//const roll:int = 0;
@@ -56,6 +64,14 @@ package
 				//do block checking to make sure it spawns on land only
 				var xTile:int = FP.rand(14);
 				var yTile:int = FP.rand(14);
+				var localXReg:int = xReg - (quad.xQuad * 4);
+				var localYReg:int = yReg - (quad.yQuad * 4);
+				if (quad.getBlock(xTile, yTile, localXReg, localYReg).getTerrainType() != Block.TERRAIN_LAND ||
+				    quad.getBlock(xTile + 1, yTile, localXReg, localYReg).getTerrainType() != Block.TERRAIN_LAND ||
+					quad.getBlock(xTile, yTile + 1, localXReg, localYReg).getTerrainType() != Block.TERRAIN_LAND ||
+					quad.getBlock(xTile + 1, yTile + 1, localXReg, localYReg).getTerrainType() != Block.TERRAIN_LAND) {
+					return;
+				}
 				var struct:StructureData = new StructureData(xTile, yTile, StructureData.TYPE_TOWN);
 				quad.addStructure(xReg - (quad.xQuad * 4), yReg - (quad.yQuad * 4), struct);
 			}

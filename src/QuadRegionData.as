@@ -50,7 +50,7 @@ package
 		 * @param	blocks the block ids for this region
 		 */
 		public function setRegion(xReg:int, yReg:int, blocks:Vector.<uint>):void {
-			allBlocks[yReg + xReg * 4] = blocks;
+			allBlocks[xReg + yReg * 4] = blocks;
 		}
 		/**
 		 * Retrieves a single region of the QuadRegion (local coords)
@@ -59,7 +59,12 @@ package
 		 * @return the block ids for this region
 		 */
 		public function getRegion(xReg:int, yReg:int):Vector.<uint> {
-			return allBlocks[yReg + xReg * 4];
+			return allBlocks[xReg + yReg * 4];
+		}
+		
+		public function getBlock(xBlock:int, yBlock:int, xReg:int, yReg:int):Block {
+			var blocks:Vector.<uint> = allBlocks[xReg + yReg * 4];
+			return Block.getBlock(blocks[xBlock + yBlock * Constants.REGION_LENGTH]);
 		}
 		
 	}
