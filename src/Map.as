@@ -124,12 +124,22 @@ package
 			{
 				const xTile:int = xReg * Constants.REGION_LENGTH + item.xTileRegion;
 				const yTile:int = yReg * Constants.REGION_LENGTH + item.yTileRegion;
-				this.world.add(new Structure(xTile, yTile, item.type));
+				var struct:Structure = (Structure)(this.world.create(Structure));
+				struct.init(xTile, yTile, item.type);
 			}
 		}
 		
 		private function unloadStructures(xReg:int, yReg:int):void {
-			//implement later
+			var entities:Array = new Array();
+			world.getType("Structure", entities);
+			for each (var item:Structure in entities) 
+			{
+				const xR:int = Math.floor(item.x / Constants.BLOCK_LENGTH / Constants.REGION_LENGTH);
+				const yR:int = Math.floor(item.y / Constants.BLOCK_LENGTH / Constants.REGION_LENGTH);
+				if (xR == xReg && yR == yReg) {
+					world.recycle(item);
+				}
+			}
 		}
 	}
 
