@@ -9,10 +9,18 @@ package
 	public class MapData 
 	{
 		private var quadRegions:Dictionary = new Dictionary();
+		private var populationNoises:Dictionary = new Dictionary(); //each noise affects 16 x 16 regions
 		private var mapgen:MapGen;
+		private var popgen:MapGen;
+		private var seed:int;
 		public function MapData() 
 		{
-			mapgen = new MapGen(Constants.REGION_LENGTH, Constants.REGION_LENGTH, (int)(FP.scale(Math.random(), 0, 1, int.MIN_VALUE, int.MAX_VALUE)));
+			seed = (int)(FP.scale(Math.random(), 0, 1, 0, int.MAX_VALUE));
+			FP.randomSeed = seed;
+			const mapSeed:int = FP.rand(int.MAX_VALUE);
+			const popSeed:int = FP.rand(int.MAX_VALUE);
+			mapgen = new MapGen(Constants.REGION_LENGTH, Constants.REGION_LENGTH, mapSeed);
+			popgen = new MapGen(16, 16, popSeed);
 		}
 		
 		//returns the block id at the specified coord - still untested
@@ -55,6 +63,19 @@ package
 			}
 			quadRegions[xQuad + " " + yQuad] = quad;
 			return quad;
+		}
+		
+		public function getPopulation(xRegion:int, yRegion:int):uint {
+			const xPop:int = Math.floor(xRegion / 16.0);
+			const yPop:int = Math.floor(yRegion / 16.0);
+			var popNoise:Vector.<uint> = populationNoises[xPop + " " + yPop];
+			if (!popNoise) {
+				popNoise = popgen.generateNoise(xPop, yPop);
+				populationNoises[xPop + " " + yPop] = popNoise;
+			}
+			const xIndex:int = xRegion - (xPop * 16);
+			const yIndex:int = yRegion - (yPop * 16);
+			return popNoise[xIndex + yIndex * 16];
 		}
 	}
 
