@@ -14,12 +14,10 @@ package
 	 */
 	public class Map extends Entity 
 	{
-		private static const BLOCK_LENGTH:int = 16;
+		public static const BLOCK_LENGTH:int = 16;
 		public static const TILE_LENGTH:int = 16;
-		private static const OFFSET_SPEED:Number = 10;
-		
 		private var timeElapsed:Number = 0;
-		private var regions:Vector.<Tilemap> = new Vector.<Tilemap>();
+		private var regions:Vector.<RegionTileMap> = new Vector.<RegionTileMap>(25, true);
 		private var mapgen:MapGen;
 		private var xCenterRegion:int=50;
 		private var yCenterRegion:int=50;
@@ -46,55 +44,38 @@ package
 					regenerate();
 					trace("Regenerated!: x:" + xCenterRegion + " y:" + yCenterRegion);
 				}
-				var i:int;
-				var j:int;
-				//if center has moved right, move leftmost regions to right most edge and regenerate
-				while (xCenterRegion < xRegion) {
-					var rightRegions:Vector.<Tilemap> = regions.splice(0, 5);
-					for (j = 0; j < 5; j++) 
+				else {
+					var check:Vector.<Boolean> = new Vector.<Boolean>(25, true);
+					var stack:Vector.<RegionTileMap> = new Vector.<RegionTileMap>();
+					xCenterRegion = xRegion;
+					yCenterRegion = yRegion;
+					var i:int;
+					var j:int;
+					var region:RegionTileMap;
+					for (i = 0; i < 5*5; i++) 
 					{
-						rightRegions[j].x = (xCenterRegion + 3) * rightRegions[j].width;
-						mapgen.generate(rightRegions[j], xCenterRegion + 3, yRegion - 2 + j);
-						regions.splice(20 + j, 0, rightRegions[j]);
-					}
-					xCenterRegion++;
-					trace("shifted right!: x:" + xCenterRegion + " y:" + yRegion);
-				}
-				//if center has moved left, move rightmost regions to left most edge and regenerate
-				while (xCenterRegion > xRegion) {
-					var leftRegions:Vector.<Tilemap> = regions.splice(20, 5);
-					for (j = 0; j < 5; j++) 
-					{
-						leftRegions[j].x = (xCenterRegion - 3) * leftRegions[j].width;
-						mapgen.generate(leftRegions[j], xCenterRegion - 3, yRegion - 2 + j);
-						regions.splice(j, 0, leftRegions[j]);
-					}
-					xCenterRegion--;
-					trace("shifted left!: x:" + xCenterRegion + " y:" + yRegion);
-				}
-				//if center has moved down, move top regions to bottom edge and regenerate
-				while (yCenterRegion < yRegion) {
+						region = regions[i];
+						if (Math.abs(xCenterRegion - region.xRegion) <= 2 && Math.abs(yCenterRegion - region.yRegion) <= 2) {
+							var xIndex:int = region.xRegion + 2 - xCenterRegion; 
+							var yIndex:int = region.yRegion + 2 - yCenterRegion; 
+							check[yIndex + xIndex * 5] = true;
+						}else {
+							stack.push(region);
+						}
+					}//Multiple tilemaps pointing to same place
+					
 					for (i = 0; i < 5; i++) 
 					{
-						var top:Vector.<Tilemap> = regions.splice(i*5, 1);
-						top[0].y = (yCenterRegion + 3) * top[0].height;
-						mapgen.generate(top[0], xRegion - 2 + i, yCenterRegion + 3);
-						regions.splice((i+1)*5 - 1, 0, top[0]);
+						for (j = 0; j < 5; j++) 
+						{
+							if (check[j + i * 5] != true) {
+								region = stack.pop();
+								region.xRegion = i - 2 + xCenterRegion;
+								region.yRegion = j - 2 + yCenterRegion;
+								mapgen.generate(region.tilemap, region.xRegion, region.yRegion);
+							}
+						}
 					}
-					yCenterRegion++;
-					trace("shifted down!: x:" + xRegion + " y:" + yCenterRegion);
-				}
-				//if center has moved up, move bottom regions to top edge and regenerate
-				while (yCenterRegion > yRegion) {
-					for (i = 0; i < 5; i++) 
-					{
-						var bottom:Vector.<Tilemap> = regions.splice((i + 1) * 5 - 1, 1);
-						bottom[0].y = (yCenterRegion - 3) * bottom[0].height;
-						mapgen.generate(bottom[0], xRegion - 2 + i, yCenterRegion - 3);
-						regions.splice(i*5, 0, bottom[0]);
-					}
-					yCenterRegion--;
-					trace("shifted up!: x:" + xRegion + " y:" + yCenterRegion);
 				}
 			}
 		}
@@ -109,26 +90,23 @@ package
 					//147
 					//258
 					//if center is (0,0)
-					var region:Tilemap = regions[j + i * 5];
-					var xReg:int = i + xCenterRegion - 2; //(-2, -1, 0, 1 , 2)
-					var yReg:int = j + yCenterRegion - 2; //(-2, -1, 0, 1 , 2)
-					mapgen.generate(region, xReg, yReg);
-					region.x = xReg * region.width; //(-512, -256, 0, 256, 512)
-					region.y = yReg * region.height;
+					var region:RegionTileMap = regions[j + i * 5];
+					region.xRegion = i + xCenterRegion - 2; //(-2, -1, 0, 1 , 2)
+					region.yRegion = j + yCenterRegion - 2; //(-2, -1, 0, 1 , 2)
+					mapgen.generate(region.tilemap, region.xRegion, region.yRegion);
 				}
 			}
 		}
 		
 		private function initRegions():void 
 		{
-			for (var i:int = 0; i < 5; i++) 
+			for (var i:int = 0; i < 5*5; i++) 
 			{
-				for (var j:int = 0; j < 5; j++) 
-				{
-					var region:Tilemap = new Tilemap(Assets.BLOCKS, TILE_LENGTH * BLOCK_LENGTH, TILE_LENGTH * BLOCK_LENGTH, BLOCK_LENGTH, BLOCK_LENGTH);
-					regions.push(region);
-					this.addGraphic(region);
-				}
+				var region:RegionTileMap = new RegionTileMap();
+				region.xRegion = 0;
+				region.yRegion = 0;
+				regions[i] = region;
+				this.addGraphic(region.tilemap);
 			}
 			regenerate();
 		}
