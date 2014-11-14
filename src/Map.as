@@ -24,6 +24,11 @@ package
 			super(x, y, graphic, mask);
 			mapdata = new MapData();
 			
+		}
+		
+		override public function added():void 
+		{
+			super.added();
 			initRegions();
 		}
 		
@@ -67,9 +72,11 @@ package
 						{
 							if (check[i + j * 5] != true) {
 								region = stack.pop();
+								unloadStructures(region.xRegion, region.yRegion);
 								region.xRegion = i - 2 + xCenterRegion;
 								region.yRegion = j - 2 + yCenterRegion;
 								setTiles(region.tilemap, region.xRegion, region.yRegion);
+								loadStructures(region.xRegion, region.yRegion);
 							}
 						}
 					}
@@ -84,9 +91,11 @@ package
 				for (var i:int = 0; i < 5; i++) 
 				{
 					var region:RegionTileMap = regions[i + j * 5];
+					unloadStructures(region.xRegion, region.yRegion);
 					region.xRegion = i + xCenterRegion - 2;
 					region.yRegion = j + yCenterRegion - 2;
 					setTiles(region.tilemap, region.xRegion, region.yRegion);
+					loadStructures(region.xRegion, region.yRegion);
 				}
 			}
 		}
@@ -109,7 +118,19 @@ package
 			tilemap.setAllTiles(tiles);
 		}
 		
+		private function loadStructures(xReg:int, yReg:int):void {
+			var structs:Vector.<StructureData> = mapdata.getAllStructures(xReg, yReg);
+			for each (var item:StructureData in structs) 
+			{
+				const xTile:int = xReg * Constants.REGION_LENGTH + item.xTileRegion;
+				const yTile:int = yReg * Constants.REGION_LENGTH + item.yTileRegion;
+				this.world.add(new Structure(xTile, yTile, item.type));
+			}
+		}
 		
+		private function unloadStructures(xReg:int, yReg:int):void {
+			//implement later
+		}
 	}
 
 }

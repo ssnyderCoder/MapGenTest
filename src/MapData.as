@@ -12,6 +12,7 @@ package
 		private var populationNoises:Dictionary = new Dictionary(); //each noise affects 16 x 16 regions
 		private var mapgen:MapGen;
 		private var popgen:MapGen;
+		private var structgen:StructureGen;
 		private var seed:int;
 		public function MapData() 
 		{
@@ -19,8 +20,10 @@ package
 			FP.randomSeed = seed;
 			const mapSeed:int = FP.rand(int.MAX_VALUE);
 			const popSeed:int = FP.rand(int.MAX_VALUE);
+			const structSeed:int = FP.rand(int.MAX_VALUE);
 			mapgen = new MapGen(Constants.REGION_LENGTH, Constants.REGION_LENGTH, mapSeed);
 			popgen = new MapGen(16, 16, popSeed);
+			structgen = new StructureGen(structSeed);
 		}
 		
 		//returns the block id at the specified coord - still untested
@@ -29,10 +32,7 @@ package
 			const yReg:int = Math.floor(1.0 * y / Constants.REGION_LENGTH);
 			const xQuadReg:int = Math.floor(xReg / 4.0);
 			const yQuadReg:int = Math.floor(yReg / 4.0);
-			var quad:QuadRegionData = quadRegions[xQuadReg + " " + yQuadReg];
-			if (!quad) {
-				quad = genQuad(xQuadReg, yQuadReg);
-			}
+			var quad:QuadRegionData = getQuad(xReg, yReg);
 			const theBlocks:Vector.<uint> = quad.getRegion(xReg - (xQuadReg * 4), yReg - (yQuadReg * 4));
 			const xBlock:int = x - (xReg * Constants.REGION_LENGTH);
 			const yBlock:int = y - (yReg * Constants.REGION_LENGTH);
@@ -41,13 +41,28 @@ package
 		
 		//get all the blocks for a specific region
 		public function getAllBlockIDs(xRegion:int, yRegion:int):Vector.<uint> {
-			var xQuadReg:int = Math.floor(xRegion / 4.0);
-			var yQuadReg:int = Math.floor(yRegion / 4.0);
+			const xQuadReg:int = Math.floor(xRegion / 4.0);
+			const yQuadReg:int = Math.floor(yRegion / 4.0);
+			var quad:QuadRegionData = getQuad(xRegion, yRegion);
+			return quad.getRegion(xRegion - (xQuadReg * 4), yRegion - (yQuadReg * 4));
+		}
+		
+		//get all the structures for a specific region
+		public function getAllStructures(xRegion:int, yRegion:int):Vector.<StructureData> {
+			const xQuadReg:int = Math.floor(xRegion / 4.0);
+			const yQuadReg:int = Math.floor(yRegion / 4.0);
+			var quad:QuadRegionData = getQuad(xRegion, yRegion);
+			return quad.getStructures(xRegion - (xQuadReg * 4), yRegion - (yQuadReg * 4));
+		}
+		
+		private function getQuad(xReg:int, yReg:int):QuadRegionData {
+			var xQuadReg:int = Math.floor(xReg / 4.0);
+			var yQuadReg:int = Math.floor(yReg / 4.0);
 			var quad:QuadRegionData = quadRegions[xQuadReg + " " + yQuadReg];
 			if (!quad) {
 				quad = genQuad(xQuadReg, yQuadReg);
 			}
-			return quad.getRegion(xRegion - (xQuadReg * 4), yRegion - (yQuadReg * 4));
+			return quad;
 		}
 		
 		private function genQuad(xQuad:int, yQuad:int):QuadRegionData {
@@ -59,6 +74,7 @@ package
 				for (var j:int = 0; j < 4; j++) 
 				{
 					quad.setRegion(i, j, mapgen.generateTerrain(xStartReg + i, yStartReg + j));
+					structgen.generate(this, quad, xStartReg + i, yStartReg + j);
 				}
 			}
 			quadRegions[xQuad + " " + yQuad] = quad;
