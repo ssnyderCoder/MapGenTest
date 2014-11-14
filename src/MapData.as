@@ -33,10 +33,9 @@ package
 			const xQuadReg:int = Math.floor(xReg / 4.0);
 			const yQuadReg:int = Math.floor(yReg / 4.0);
 			var quad:QuadRegionData = getQuad(xReg, yReg);
-			const theBlocks:Vector.<uint> = quad.getRegion(xReg - (xQuadReg * 4), yReg - (yQuadReg * 4));
 			const xBlock:int = x - (xReg * Constants.REGION_LENGTH);
 			const yBlock:int = y - (yReg * Constants.REGION_LENGTH);
-			return Block.getBlock(theBlocks[xBlock + yBlock*Constants.REGION_LENGTH]);
+			return quad.getBlock(xBlock, yBlock, xReg - (xQuadReg * 4), yReg - (yQuadReg * 4));
 		}
 		
 		//get all the blocks for a specific region
@@ -74,11 +73,48 @@ package
 				for (var j:int = 0; j < 4; j++) 
 				{
 					quad.setRegion(i, j, mapgen.generateTerrain(xStartReg + i, yStartReg + j));
-					structgen.generate(this, quad, xStartReg + i, yStartReg + j);
 				}
 			}
 			quadRegions[xQuad + " " + yQuad] = quad;
 			return quad;
+		}
+		
+		private function genQuadStructures(quad:QuadRegionData):void {
+			var xStartReg:int = quad.xQuad * 4;
+			var yStartReg:int = quad.yQuad * 4;
+			for (var i:int = 0; i < 4; i++) 
+			{
+				for (var j:int = 0; j < 4; j++) 
+				{
+					structgen.generate(this, quad, xStartReg + i, yStartReg + j);
+				}
+			}
+			quad.hasGeneratedStructures = true;
+		}
+		
+		public function createSurroundingQuads(xReg:int, yReg:int, prevXReg:int=int.MIN_VALUE, prevYReg:int=int.MIN_VALUE):void {
+			var xQuadReg:int = Math.floor(xReg / 4.0);
+			var yQuadReg:int = Math.floor(yReg / 4.0);
+			var xPrevQuadReg:int = Math.floor(prevXReg / 4.0);
+			var yPrevQuadReg:int = Math.floor(prevYReg / 4.0);
+			if (xQuadReg == xPrevQuadReg && yQuadReg == yPrevQuadReg) {
+				return;
+			}
+			for (var i:int = -1; i < 2; i++) 
+			{
+				for (var j:int = -1; j < 2; j++) 
+				{
+					var xQ:int = xQuadReg + i;
+					var yQ:int = yQuadReg + j;
+					var quad:QuadRegionData = quadRegions[xQ + " " + yQ];
+					if (!quad) {
+						quad = genQuad(xQuadReg, yQuadReg);
+					}
+					if (!quad.hasGeneratedStructures) {
+						genQuadStructures(quad);
+					}
+				}
+			}
 		}
 		
 		public function getPopulation(xRegion:int, yRegion:int):uint {

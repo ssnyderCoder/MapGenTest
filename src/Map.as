@@ -17,8 +17,8 @@ package
 		private var timeElapsed:Number = 0;
 		private var regions:Vector.<RegionTileMap> = new Vector.<RegionTileMap>(25, true);
 		private var mapdata:MapData;
-		private var xCenterRegion:int=50;
-		private var yCenterRegion:int=50;
+		private var xCenterRegion:int=1;
+		private var yCenterRegion:int=1;
 		public function Map(x:Number=0, y:Number=0, graphic:Graphic=null, mask:Mask=null) 
 		{
 			super(x, y, graphic, mask);
@@ -38,8 +38,9 @@ package
 			var xTile:int = Math.floor(xPos / Constants.BLOCK_LENGTH);
 			var yTile:int = Math.floor(yPos / Constants.BLOCK_LENGTH);
 			var xRegion:int = Math.floor(xTile / Constants.REGION_LENGTH);
-			var yRegion:int = Math.floor( yTile / Constants.REGION_LENGTH);
+			var yRegion:int = Math.floor(yTile / Constants.REGION_LENGTH);
 			if (xRegion != xCenterRegion || yRegion != yCenterRegion) {
+				mapdata.createSurroundingQuads(xRegion, yRegion, xCenterRegion, yCenterRegion);
 				//if center vastly different, then just regenerate everything
 				if(Math.abs(xRegion - xCenterRegion) > 3 || Math.abs(yRegion - yCenterRegion) > 3){
 					xCenterRegion = xRegion;
@@ -86,6 +87,7 @@ package
 		
 		private function regenerate():void 
 		{
+			mapdata.createSurroundingQuads(xCenterRegion, yCenterRegion);
 			for (var j:int = 0; j < 5; j++) 
 			{
 				for (var i:int = 0; i < 5; i++) 

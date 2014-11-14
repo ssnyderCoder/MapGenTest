@@ -11,6 +11,7 @@ package
 		public var yQuad:int;
 		private var allBlocks:Vector.<Vector.<uint>>;
 		private var structures:Vector.<Vector.<StructureData>>;
+		private var _hasGeneratedStructures:Boolean = false;
 		
 		public function QuadRegionData(x:int, y:int) {
 			this.xQuad = x;
@@ -65,6 +66,16 @@ package
 		public function getBlock(xBlock:int, yBlock:int, xReg:int, yReg:int):Block {
 			var blocks:Vector.<uint> = allBlocks[xReg + yReg * 4];
 			return Block.getBlock(blocks[xBlock + yBlock * Constants.REGION_LENGTH]);
+		}
+		
+		public function get hasGeneratedStructures():Boolean 
+		{
+			return _hasGeneratedStructures;
+		}
+		
+		public function set hasGeneratedStructures(value:Boolean):void 
+		{
+			_hasGeneratedStructures = value;
 		}
 		
 	}
