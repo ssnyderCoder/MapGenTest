@@ -19,7 +19,8 @@ package
 		
 		//get all the blocks for a specific region
 		public function getAllBlockIDs(xRegion:int, yRegion:int):Vector.<uint> {
-			return null;
+			var vec:Vector.<uint> =  new Vector.<uint>();
+			vec.push(1, 2, 3, 4, 5)
 		}
 		
 	}

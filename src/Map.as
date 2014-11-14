@@ -19,11 +19,13 @@ package
 		private var timeElapsed:Number = 0;
 		private var regions:Vector.<RegionTileMap> = new Vector.<RegionTileMap>(25, true);
 		private var mapgen:MapGen;
+		private var mapdata:MapData;
 		private var xCenterRegion:int=50;
 		private var yCenterRegion:int=50;
 		public function Map(x:Number=0, y:Number=0, graphic:Graphic=null, mask:Mask=null) 
 		{
 			super(x, y, graphic, mask);
+			mapdata = new MapData();
 			mapgen = new MapGen(TILE_LENGTH, TILE_LENGTH, (int)(FP.scale(Math.random(), 0, 1, int.MIN_VALUE, int.MAX_VALUE)));
 			
 			initRegions();
@@ -62,7 +64,7 @@ package
 						}else {
 							stack.push(region);
 						}
-					}//Multiple tilemaps pointing to same place
+					}
 					
 					for (i = 0; i < 5; i++) 
 					{
@@ -109,6 +111,10 @@ package
 				this.addGraphic(region.tilemap);
 			}
 			regenerate();
+		}
+		
+		private function setTiles(tilemap:Tilemap, xReg:int, yReg:int):void {
+			var tiles:Vector.<uint> = mapdata.getAllBlockIDs(xReg, yReg);
 		}
 		
 		
