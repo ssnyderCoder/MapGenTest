@@ -1,4 +1,4 @@
-package  
+package gen
 {
 	import flash.geom.Point;
 	import net.flashpunk.graphics.Tilemap;

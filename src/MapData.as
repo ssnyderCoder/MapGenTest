@@ -1,6 +1,9 @@
 package  
 {
 	import flash.utils.Dictionary;
+	import gen.CityDecorator;
+	import gen.MapDecorator;
+	import gen.MapGen;
 	import net.flashpunk.FP;
 	/**
 	 * Contains all internal data for each region. Renderer and updater classes retrieve information about the map from this class.
@@ -12,7 +15,7 @@ package
 		private var populationNoises:Dictionary = new Dictionary(); //each noise affects 16 x 16 regions
 		private var mapgen:MapGen;
 		private var popgen:MapGen;
-		private var structgen:StructureGen;
+		private var decorators:Vector.<MapDecorator>;
 		private var seed:int;
 		public function MapData() 
 		{
@@ -20,10 +23,16 @@ package
 			FP.randomSeed = seed;
 			const mapSeed:int = FP.rand(int.MAX_VALUE);
 			const popSeed:int = FP.rand(int.MAX_VALUE);
-			const structSeed:int = FP.rand(int.MAX_VALUE);
 			mapgen = new MapGen(Constants.REGION_LENGTH, Constants.REGION_LENGTH, mapSeed);
 			popgen = new MapGen(16, 16, popSeed);
-			structgen = new StructureGen(structSeed);
+			setupDecorators();
+		}
+		
+		private function setupDecorators():void 
+		{
+			decorators = new Vector.<MapDecorator>();
+			const citySeed:int = FP.rand(int.MAX_VALUE);
+			decorators.push(new CityDecorator(citySeed));
 		}
 		
 		//returns the block id at the specified coord - still untested
@@ -79,17 +88,16 @@ package
 			return quad;
 		}
 		
-		private function genQuadStructures(quad:QuadRegionData):void {
+		private function genQuadStructures(quad:QuadRegionData, decorator:MapDecorator):void {
 			var xStartReg:int = quad.xQuad * 4;
 			var yStartReg:int = quad.yQuad * 4;
 			for (var i:int = 0; i < 4; i++) 
 			{
 				for (var j:int = 0; j < 4; j++) 
 				{
-					structgen.generate(this, quad, xStartReg + i, yStartReg + j);
+					decorator.generate(this, xStartReg + i, yStartReg + j);
 				}
 			}
-			quad.hasGeneratedStructures = true;
 		}
 		
 		public function createSurroundingQuads(xReg:int, yReg:int, prevXReg:int=int.MIN_VALUE, prevYReg:int=int.MIN_VALUE):void {
@@ -100,18 +108,24 @@ package
 			if (xQuadReg == xPrevQuadReg && yQuadReg == yPrevQuadReg) {
 				return;
 			}
-			for (var i:int = -1; i < 2; i++) 
-			{
-				for (var j:int = -1; j < 2; j++) 
+			for (var decID:int = 0; decID < decorators.length; decID++) 
+			{		
+				for (var i:int = -1; i < 2; i++) 
 				{
-					var xQ:int = xQuadReg + i;
-					var yQ:int = yQuadReg + j;
-					var quad:QuadRegionData = quadRegions[xQ + " " + yQ];
-					if (!quad) {
-						quad = genQuad(xQuadReg, yQuadReg);
-					}
-					if (!quad.hasGeneratedStructures) {
-						genQuadStructures(quad);
+					for (var j:int = -1; j < 2; j++) 
+					{
+						var xQ:int = xQuadReg + i;
+						var yQ:int = yQuadReg + j;
+						var quad:QuadRegionData = quadRegions[xQ + " " + yQ];
+						if (!quad) {
+							quad = genQuad(xQuadReg, yQuadReg);
+						}
+						if (!quad.hasGeneratedStructures) {
+							genQuadStructures(quad, decorators[decID]);
+							if (decID == decorators.length - 1) {
+								quad.hasGeneratedStructures = true;
+							}
+						}
 					}
 				}
 			}

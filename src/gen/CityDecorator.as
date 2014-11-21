@@ -1,34 +1,26 @@
-package  
+package gen
 {
 	import net.flashpunk.FP;
 	/**
-	 * Occurs after terrain generation.  Only terrain available to directly query,
-	 * though structure generation can be simulated and checked.
+	 * ...
 	 * @author Sean Snyder
 	 */
-	public class StructureGen 
+	public class CityDecorator extends MapDecorator 
 	{
-		private var seed:int;
-		public function StructureGen(seed:int) 
+		
+		public function CityDecorator(seed:int) 
 		{
-			this.seed = seed;
+			super(seed);
 		}
 		
-		public function generate(mapdata:MapData, quad:QuadRegionData, xReg:int, yReg:int):void {
-			FP.randomSeed = seed;
-			const rand1:int = FP.rand(int.MAX_VALUE);
-			const rand2:int = FP.rand(int.MAX_VALUE);
-			const xSeed:int = xReg * rand1;
-			const ySeed:int = yReg * rand2;
-			const regSeed:int = xSeed ^ ySeed ^ seed;
-			//scanning other terrain will be tricky if done before other quad regions generated
-			//structure generation would have to be entirely separate step
-			FP.randomSeed = regSeed;
-			genCamp(xReg, yReg, mapdata, quad);
-			genTown(xReg, yReg, mapdata, quad);
+		override protected function beginGeneration(xReg:int, yReg:int, mapdata:MapData):void 
+		{
+			genCamp(xReg, yReg, mapdata);
+			genTown(xReg, yReg, mapdata);
 		}
+		
 		//TO DO: research uint to int conversion in flash
-		private function genCamp(xReg:int, yReg:int, mapdata:MapData, quad:QuadRegionData):void 
+		private function genCamp(xReg:int, yReg:int, mapdata:MapData):void 
 		{
 			//gen a camp in places with fairly low population
 			const popValue:int = mapdata.getPopulation(xReg, yReg);
@@ -53,7 +45,7 @@ package
 			}
 		}
 		
-		private function genTown(xReg:int, yReg:int, mapdata:MapData, quad:QuadRegionData):void 
+		private function genTown(xReg:int, yReg:int, mapdata:MapData):void 
 		{
 			//gen a town in places with high population
 			const popValue:int = mapdata.getPopulation(xReg, yReg);
