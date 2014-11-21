@@ -23,14 +23,13 @@ package
 			const regSeed:int = xSeed ^ ySeed ^ seed;
 			//scanning other terrain will be tricky if done before other quad regions generated
 			//structure generation would have to be entirely separate step
-			genCamp(xReg, yReg, mapdata, quad, regSeed);
-			genTown(xReg, yReg, mapdata, quad, regSeed);
+			FP.randomSeed = regSeed;
+			genCamp(xReg, yReg, mapdata, quad);
+			genTown(xReg, yReg, mapdata, quad);
 		}
 		//TO DO: research uint to int conversion in flash
-		private function genCamp(xReg:int, yReg:int, mapdata:MapData, quad:QuadRegionData, seed:int):void 
+		private function genCamp(xReg:int, yReg:int, mapdata:MapData, quad:QuadRegionData):void 
 		{
-			FP.randomSeed = seed;
-			FP.randomSeed = FP.rand(int.MAX_VALUE / 3) * 2;
 			//gen a camp in places with fairly low population
 			const popValue:int = mapdata.getPopulation(xReg, yReg);
 			const maxChance:int = 35 - Math.abs(popValue - 70);
@@ -50,14 +49,12 @@ package
 					return;
 				}
 				var struct:StructureData = new StructureData(xOffset, yOffset, StructureData.TYPE_CAMP);
-				quad.addStructure(xReg - (quad.xQuad * 4), yReg - (quad.yQuad * 4), struct);
+				mapdata.addStructure(xReg, yReg, struct);
 			}
 		}
 		
-		private function genTown(xReg:int, yReg:int, mapdata:MapData, quad:QuadRegionData, seed:int):void 
+		private function genTown(xReg:int, yReg:int, mapdata:MapData, quad:QuadRegionData):void 
 		{
-			FP.randomSeed = seed;
-			FP.randomSeed = FP.rand(int.MAX_VALUE / 3) * 3;
 			//gen a town in places with high population
 			const popValue:int = mapdata.getPopulation(xReg, yReg);
 			const maxChance:int = (popValue - 105) / 2;
@@ -77,7 +74,7 @@ package
 					return;
 				}
 				var struct:StructureData = new StructureData(xOffset, yOffset, StructureData.TYPE_TOWN);
-				quad.addStructure(xReg - (quad.xQuad * 4), yReg - (quad.yQuad * 4), struct);
+				mapdata.addStructure(xReg, yReg, struct);
 			}
 		}
 		
