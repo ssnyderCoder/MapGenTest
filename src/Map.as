@@ -124,10 +124,8 @@ package
 			var structs:Vector.<StructureData> = mapdata.getAllStructures(xReg, yReg);
 			for each (var item:StructureData in structs) 
 			{
-				const xTile:int = xReg * Constants.REGION_LENGTH + item.xTileRegion;
-				const yTile:int = yReg * Constants.REGION_LENGTH + item.yTileRegion;
 				var struct:Structure = (Structure)(this.world.create(Structure));
-				struct.init(xTile, yTile, item.type);
+				struct.init(item.xTile, item.yTile, item.type);
 			}
 		}
 		

@@ -48,7 +48,7 @@ package
 					mapdata.getBlock(xTile + 1, yTile + 1).getTerrainType() != Block.TERRAIN_LAND) {
 					return;
 				}
-				var struct:StructureData = new StructureData(xOffset, yOffset, StructureData.TYPE_CAMP);
+				var struct:StructureData = new StructureData(xTile, yTile, StructureData.TYPE_CAMP);
 				mapdata.addStructure(xReg, yReg, struct);
 			}
 		}
@@ -73,7 +73,7 @@ package
 					mapdata.getBlock(xTile + 1, yTile + 1).getTerrainType() != Block.TERRAIN_LAND) {
 					return;
 				}
-				var struct:StructureData = new StructureData(xOffset, yOffset, StructureData.TYPE_TOWN);
+				var struct:StructureData = new StructureData(xTile, yTile, StructureData.TYPE_TOWN);
 				mapdata.addStructure(xReg, yReg, struct);
 			}
 		}

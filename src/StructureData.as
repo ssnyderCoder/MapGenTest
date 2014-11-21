@@ -10,12 +10,12 @@ package
 		public static const TYPE_CAMP:int = 1;
 		
 		public var type:int;
-		public var xTileRegion:int;
-		public var yTileRegion:int;
+		public var xTile:int;
+		public var yTile:int;
 		
 		public function StructureData(x:int, y:int, type:int) {
-			this.xTileRegion = x;
-			this.yTileRegion = y;
+			this.xTile = x;
+			this.yTile = y;
 			this.type = type;
 		}
 		
