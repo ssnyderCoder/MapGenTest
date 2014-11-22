@@ -37,8 +37,8 @@ package
 			//problem: need to round down rather than use int division for negative numbers to work properly
 			var xTile:int = Math.floor(xPos / Constants.BLOCK_LENGTH);
 			var yTile:int = Math.floor(yPos / Constants.BLOCK_LENGTH);
-			var xRegion:int = Math.floor(xTile / Constants.REGION_LENGTH);
-			var yRegion:int = Math.floor(yTile / Constants.REGION_LENGTH);
+			var xRegion:int = Math.floor(xTile / 1.0 / Constants.REGION_LENGTH);
+			var yRegion:int = Math.floor(yTile / 1.0 / Constants.REGION_LENGTH);
 			if (xRegion != xCenterRegion || yRegion != yCenterRegion) {
 				mapdata.createSurroundingQuads(xRegion, yRegion, xCenterRegion, yCenterRegion);
 				//if center vastly different, then just regenerate everything
