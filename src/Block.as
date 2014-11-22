@@ -36,10 +36,11 @@ package
 		public static const BLOCK_GRASS:Block = new Block(2).setTerrainType(TERRAIN_LAND);
 		public static const BLOCK_STONE:Block = new Block(3).setTerrainType(TERRAIN_LAND);
 		public static const BLOCK_MOUNTAIN:Block = new Block(4).setTerrainType(TERRAIN_MOUNTAIN);
+		public static const BLOCK_ROAD:Block = new Block(5).setTerrainType(TERRAIN_LAND);
 		
 		private static const blocks:Vector.<Block> = new Vector.<Block>();
 		{
-			blocks.push(BLOCK_WATER, BLOCK_SAND, BLOCK_GRASS, BLOCK_STONE, BLOCK_MOUNTAIN);
+			blocks.push(BLOCK_WATER, BLOCK_SAND, BLOCK_GRASS, BLOCK_STONE, BLOCK_MOUNTAIN, BLOCK_ROAD);
 		}
 		
 		public static function getBlock(id:int):Block {

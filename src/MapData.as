@@ -1,9 +1,11 @@
 package  
 {
 	import flash.utils.Dictionary;
+	import gen.BlockDecorator;
 	import gen.CityDecorator;
 	import gen.MapDecorator;
 	import gen.MapGen;
+	import gen.RoadDecorator;
 	import net.flashpunk.FP;
 	/**
 	 * Contains all internal data for each region. Renderer and updater classes retrieve information about the map from this class.
@@ -31,11 +33,18 @@ package
 		private function setupDecorators():void 
 		{
 			decorators = new Vector.<MapDecorator>();
-			const citySeed:int = FP.rand(int.MAX_VALUE);
+			/*const citySeed:int = FP.rand(int.MAX_VALUE);
 			decorators.push(new CityDecorator(citySeed));
+			const roadSeed:int = FP.rand(int.MAX_VALUE);
+			decorators.push(new RoadDecorator(roadSeed));
+			const roadSeed2:int = FP.rand(int.MAX_VALUE);
+			decorators.push(new RoadDecorator(roadSeed2));*/
+			const roadSeed1:int = FP.rand(int.MAX_VALUE);
+			decorators.push(new BlockDecorator(roadSeed1, Block.BLOCK_ROAD.getTileID(), 100));
+			
 		}
 		
-		//returns the block id at the specified coord - still untested
+		//returns the block id at the specified coord
 		public function getBlock(x:int, y:int):Block {
 			const xReg:int = Math.floor(1.0 * x / Constants.REGION_LENGTH);
 			const yReg:int = Math.floor(1.0 * y / Constants.REGION_LENGTH);
@@ -45,6 +54,17 @@ package
 			const xBlock:int = x - (xReg * Constants.REGION_LENGTH);
 			const yBlock:int = y - (yReg * Constants.REGION_LENGTH);
 			return quad.getBlock(xBlock, yBlock, xReg - (xQuadReg * 4), yReg - (yQuadReg * 4));
+		}
+		
+		public function setBlock(x:int, y:int, blockID:uint):void {
+			const xReg:int = Math.floor(1.0 * x / Constants.REGION_LENGTH);
+			const yReg:int = Math.floor(1.0 * y / Constants.REGION_LENGTH);
+			const xQuadReg:int = Math.floor(xReg / 4.0);
+			const yQuadReg:int = Math.floor(yReg / 4.0);
+			var quad:QuadRegionData = getQuad(xReg, yReg);
+			const xBlock:int = x - (xReg * Constants.REGION_LENGTH);
+			const yBlock:int = y - (yReg * Constants.REGION_LENGTH);
+			return quad.setBlock(xBlock, yBlock, xReg - (xQuadReg * 4), yReg - (yQuadReg * 4), blockID);
 		}
 		
 		//get all the blocks for a specific region

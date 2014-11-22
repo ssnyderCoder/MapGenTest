@@ -68,6 +68,11 @@ package
 			return Block.getBlock(blocks[xBlock + yBlock * Constants.REGION_LENGTH]);
 		}
 		
+		public function setBlock(xBlock:int, yBlock:int, xReg:int, yReg:int, blockID:uint):void {
+			var blocks:Vector.<uint> = allBlocks[xReg + yReg * 4];
+			blocks[xBlock + yBlock * Constants.REGION_LENGTH] = blockID;
+		}
+		
 		public function get hasGeneratedStructures():Boolean 
 		{
 			return _hasGeneratedStructures;
