@@ -16,8 +16,8 @@ package
 		public function QuadRegionData(x:int, y:int) {
 			this.xQuad = x;
 			this.yQuad = y;
-			this.allBlocks = new Vector.<Vector.<uint>>(16);
-			this.structures = new Vector.<Vector.<StructureData>>(16);
+			this.allBlocks = new Vector.<Vector.<uint>>(16, true);
+			this.structures = new Vector.<Vector.<StructureData>>(16, true);
 		}
 		
 		/**

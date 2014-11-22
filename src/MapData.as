@@ -138,9 +138,10 @@ package
 						var yQ:int = yQuadReg + j;
 						var quad:QuadRegionData = quadRegions[xQ + " " + yQ];
 						if (!quad) {
-							quad = genQuad(xQuadReg, yQuadReg);
+							quad = genQuad(xQ, yQ);
 						}
 						if (!quad.hasGeneratedStructures) {
+							//trace("Decorator called for " + xReg + " " + yReg);
 							genQuadStructures(quad, decorators[decID]);
 							if (decID == decorators.length - 1) {
 								quad.hasGeneratedStructures = true;

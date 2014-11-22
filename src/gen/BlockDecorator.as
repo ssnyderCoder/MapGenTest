@@ -26,8 +26,9 @@ package gen
 				//var yBlock:int = yReg * Constants.REGION_LENGTH + FP.rand(16);
 				var xBlock:int = xReg * Constants.REGION_LENGTH + 8 + offset;
 				var yBlock:int = yReg * Constants.REGION_LENGTH + 8 + offset;
-				//mapdata.setBlock(xBlock, yBlock, blockID);
-				mapdata.addStructure(xReg, yReg, new StructureData(xBlock, yBlock, StructureData.TYPE_CAMP));
+				mapdata.setBlock(xBlock, yBlock, blockID);
+				//mapdata.addStructure(xReg, yReg, new StructureData(xBlock, yBlock, StructureData.TYPE_CAMP));
+				//trace("Decorator called for " + xReg + " " + yReg);
 			}
 		}
 		
