@@ -33,14 +33,10 @@ package
 		private function setupDecorators():void 
 		{
 			decorators = new Vector.<MapDecorator>();
-			/*const citySeed:int = FP.rand(int.MAX_VALUE);
+			const citySeed:int = FP.rand(int.MAX_VALUE);
 			decorators.push(new CityDecorator(citySeed));
 			const roadSeed:int = FP.rand(int.MAX_VALUE);
 			decorators.push(new RoadDecorator(roadSeed));
-			const roadSeed2:int = FP.rand(int.MAX_VALUE);
-			decorators.push(new RoadDecorator(roadSeed2));*/
-			const roadSeed1:int = FP.rand(int.MAX_VALUE);
-			decorators.push(new BlockDecorator(roadSeed1, Block.BLOCK_ROAD.getTileID(), 100));
 			
 		}
 		
@@ -141,7 +137,6 @@ package
 							quad = genQuad(xQ, yQ);
 						}
 						if (!quad.hasGeneratedStructures) {
-							//trace("Decorator called for " + xReg + " " + yReg);
 							genQuadStructures(quad, decorators[decID]);
 							if (decID == decorators.length - 1) {
 								quad.hasGeneratedStructures = true;

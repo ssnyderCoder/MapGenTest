@@ -17,7 +17,7 @@ package gen
 			return;
 			var struct:StructureData = findTown(xReg, yReg, mapdata);
 			var pop:uint = mapdata.getPopulation(xReg, yReg);
-			if (struct && pop > 150) {
+			if (struct && pop > 10) {
 				genRoadsAround(struct, mapdata);
 			}
 		}
