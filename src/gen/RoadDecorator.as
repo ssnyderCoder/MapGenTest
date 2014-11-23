@@ -15,10 +15,22 @@ package gen
 		override protected function beginGeneration(xReg:int, yReg:int, mapdata:MapData):void 
 		{
 			var struct:StructureData = findTown(xReg, yReg, mapdata);
-			var pop:uint = mapdata.getPopulation(xReg, yReg);
-			if (struct && pop > 0) {
+			if (struct) {
 				genRoadsAround(struct, mapdata);
 			}
+			//only activate this if is first region of quad (0,0)
+			if (xReg % 4 == 0 && yReg % 4 == 0) {
+				const xQuad:int = Math.floor(xReg / 4.0);
+				const yQuad:int = Math.floor(yReg / 4.0);
+				genRoadsBetweenTowns(xReg, yReg, mapdata);
+			}
+		}
+		
+		private function genRoadsBetweenTowns(xQuad:int, yQuad:int, mapdata:MapData):void 
+		{
+			//get all towns in this quad and adj surrounding quads
+			//all towns that are in adjacent regions are connected with roads
+			//generate all roads that appear in this quad
 		}
 		
 		private function genRoadsAround(struct:StructureData, mapdata:MapData):void 

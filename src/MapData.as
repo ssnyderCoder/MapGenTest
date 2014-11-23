@@ -18,6 +18,7 @@ package
 		private var mapgen:MapGen;
 		private var popgen:MapGen;
 		private var decorators:Vector.<MapDecorator>;
+		private var adjDecorators:Vector.<MapDecorator>;
 		private var seed:int;
 		public function MapData() 
 		{
@@ -33,10 +34,11 @@ package
 		private function setupDecorators():void 
 		{
 			decorators = new Vector.<MapDecorator>();
+			adjDecorators = new Vector.<MapDecorator>();
 			const citySeed:int = FP.rand(int.MAX_VALUE);
 			decorators.push(new CityDecorator(citySeed));
 			const roadSeed:int = FP.rand(int.MAX_VALUE);
-			decorators.push(new RoadDecorator(roadSeed));
+			adjDecorators.push(new RoadDecorator(roadSeed));
 			
 		}
 		
@@ -124,11 +126,45 @@ package
 			if (xQuadReg == xPrevQuadReg && yQuadReg == yPrevQuadReg) {
 				return;
 			}
+			//generate and decorate the 5 x 5 box of quads
+			makeQuadsInRange(xQuadReg, yQuadReg, 2);
+			//decorate the 3x3 box of quads
+			decorateAdjQuads(xQuadReg, yQuadReg);
+		}
+		
+		private function decorateAdjQuads(xQuadReg:int, yQuadReg:int):void 
+		{
+			const range:int = 1;
+			for (var decID:int = 0; decID < adjDecorators.length; decID++) 
+			{		
+				for (var i:int = -range; i < range+1; i++) 
+				{
+					for (var j:int = -range; j < range+1; j++) 
+					{
+						var xQ:int = xQuadReg + i;
+						var yQ:int = yQuadReg + j;
+						var quad:QuadRegionData = quadRegions[xQ + " " + yQ];
+						if (!quad) {
+							quad = genQuad(xQ, yQ);
+						}
+						if (!quad.hasGeneratedAdj) {
+							genQuadStructures(quad, adjDecorators[decID]);
+							if (decID == adjDecorators.length - 1) {
+								quad.hasGeneratedAdj = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		private function makeQuadsInRange(xQuadReg:int, yQuadReg:int, range:int):void 
+		{
 			for (var decID:int = 0; decID < decorators.length; decID++) 
 			{		
-				for (var i:int = -1; i < 2; i++) 
+				for (var i:int = -range; i < range+1; i++) 
 				{
-					for (var j:int = -1; j < 2; j++) 
+					for (var j:int = -range; j < range+1; j++) 
 					{
 						var xQ:int = xQuadReg + i;
 						var yQ:int = yQuadReg + j;

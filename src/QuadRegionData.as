@@ -12,6 +12,7 @@ package
 		private var allBlocks:Vector.<Vector.<uint>>;
 		private var structures:Vector.<Vector.<StructureData>>;
 		private var _hasGeneratedStructures:Boolean = false;
+		private var _hasGeneratedAdj:Boolean = false;
 		
 		public function QuadRegionData(x:int, y:int) {
 			this.xQuad = x;
@@ -81,6 +82,16 @@ package
 		public function set hasGeneratedStructures(value:Boolean):void 
 		{
 			_hasGeneratedStructures = value;
+		}
+		
+		public function get hasGeneratedAdj():Boolean 
+		{
+			return _hasGeneratedAdj;
+		}
+		
+		public function set hasGeneratedAdj(value:Boolean):void 
+		{
+			_hasGeneratedAdj = value;
 		}
 		
 	}
