@@ -14,10 +14,9 @@ package gen
 		
 		override protected function beginGeneration(xReg:int, yReg:int, mapdata:MapData):void 
 		{
-			return;
 			var struct:StructureData = findTown(xReg, yReg, mapdata);
 			var pop:uint = mapdata.getPopulation(xReg, yReg);
-			if (struct && pop > 10) {
+			if (struct && pop > 0) {
 				genRoadsAround(struct, mapdata);
 			}
 		}
