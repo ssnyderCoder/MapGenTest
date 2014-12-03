@@ -81,7 +81,7 @@ package
 			return quad.getStructures(xRegion - (xQuadReg * 4), yRegion - (yQuadReg * 4));
 		}
 		
-		private function getQuad(xReg:int, yReg:int):QuadRegionData {
+		public function getQuad(xReg:int, yReg:int):QuadRegionData {
 			var xQuadReg:int = Math.floor(xReg / 4.0);
 			var yQuadReg:int = Math.floor(yReg / 4.0);
 			var quad:QuadRegionData = quadRegions[xQuadReg + " " + yQuadReg];

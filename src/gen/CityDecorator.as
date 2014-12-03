@@ -49,10 +49,10 @@ package gen
 		{
 			//gen a town in places with high population
 			const popValue:int = mapdata.getPopulation(xReg, yReg);
-			const maxChance:int = (popValue - 105) / 2;
-			//const maxChance:int = 25;
+			//const maxChance:int = (popValue - 105) / 2;
+			const maxChance:int = 25;
 			const roll:int = FP.rand(100);
-			//const roll:int = 0;
+			//const roll:int = 30;
 			if (roll < maxChance) {
 				//do block checking to make sure it spawns on land only
 				var xOffset:int = FP.rand(14);
